@@ -19,7 +19,6 @@ Package.onUse(function(api) {
     , 'fonts/icomoon/icomoon.ttf'
     , 'fonts/icomoon/icomoon.woff'
     , 'css/component.css'
-    , 'css/demo.css'
     ], 'client');
   api.export('minimalForm', 'client')
 });

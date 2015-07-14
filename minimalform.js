@@ -142,6 +142,9 @@ if (Meteor.isClient) {
         minimalForm.prototype.options = {
             onSubmit: function () {
                 return false;
+            },
+            onAdded:function(qid, answer){
+                return false;
             }
         };
 
@@ -231,10 +234,10 @@ if (Meteor.isClient) {
             if (!this._validate()) {
                 return false;
             }                                                                                                           
-                                                                                                                        
+                
+            var input = this.questions[this.current].querySelector('input, textarea, select');                                                                                                        
             // checks HTML5 validation                                                                                  
             if (this.supportsHTML5Forms) {
-                var input = this.questions[this.current].querySelector('input, textarea, select');                      
                 // clear any previous error messages                                                                    
                 input.setCustomValidity('');                                                                            
                                                                                                                         
@@ -248,7 +251,9 @@ if (Meteor.isClient) {
                     // prevent the question from changing                                                               
                     return false;
                 }
-            }                                                                                                           
+            }     
+            
+            this.options.onAdded(this.current, input.value);                                                                                                      
                                                                                                                         
             // check if form is filled                                                                                  
             if (this.current === this.questionsCount - 1) {
@@ -259,11 +264,8 @@ if (Meteor.isClient) {
             this._clearError();                                                                                         
                                                                                                                         
             // current question                                                                                         
-            var currentQuestion = this.questions[this.current];                                                         
-                                                                                                                        
-            // increment current question iterator                                                                      
-            ++this.current;                                                                                             
-                                                                                                                        
+            var currentQuestion = this.questions[this.current++];
+                                                                     
             // update progress bar                                                                                      
             this._progress();
 

@@ -128,7 +128,7 @@
 .next {
 	position: absolute;
 	right: 0;
-	bottom: 2.15em; /* padding-bottom of form plus progress bar height */
+	bottom: 90px; /* padding-bottom of form plus progress bar height */
 	display: block;
 	padding: 0;
 	width: 2em;
