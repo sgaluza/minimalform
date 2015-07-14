@@ -9,14 +9,18 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.1.0.2');
-  api.addFiles('minimalform.js');
-  api.addFiles('fonts/codropsicons/codropsicons.eot');
-  api.addFiles('fonts/codropsicons/codropsicons.svg');
-  api.addFiles('fonts/codropsicons/codropsicons.ttf');
-  api.addFiles('fonts/codropsicons/codropsicons.woff');
-  api.addFiles('fonts/icomoon/icomoon.eot');
-  api.addFiles('fonts/icomoon/icomoon.svg');
-  api.addFiles('fonts/icomoon/icomoon.ttf');
-  api.addFiles('fonts/icomoon/icomoon.woff');
+  api.addFiles(['minimalform.js'
+    , 'fonts/codropsicons/codropsicons.eot'
+    , 'fonts/codropsicons/codropsicons.svg'
+    , 'fonts/codropsicons/codropsicons.ttf'
+    , 'fonts/codropsicons/codropsicons.woff'
+    , 'fonts/icomoon/icomoon.eot'
+    , 'fonts/icomoon/icomoon.svg'
+    , 'fonts/icomoon/icomoon.ttf'
+    , 'fonts/icomoon/icomoon.woff'
+    , 'css/component.css'
+    , 'css/demo.css'
+    ], 'client');
+  api.export('minimalForm', 'client')
 });
 
