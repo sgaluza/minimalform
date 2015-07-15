@@ -367,7 +367,57 @@ if (Meteor.isClient) {
         // clears/hides the current error message                                                                       
         minimalForm.prototype._clearError = function () {
             classie.removeClass(this.error, 'show');
-        }                                                                                                               
+        }
+
+        minimalForm.prototype.setActiveQuestion = function(index){
+            // clear any previous error messages
+            this._clearError();
+
+            // current question
+            var currentQuestion = this.questions[this.current];
+            this.current = index;
+            // update progress bar
+            this._progress();
+
+            if (!this.isFilled) {
+                // change the current question number/status
+                this._updateQuestionNumber();
+
+                // add class "show-next" to form element (start animations)
+                classie.addClass(this.el, 'show-next');
+
+                // remove class "current" from current question and add it to the next one
+                // current question
+                var nextQuestion = this.questions[this.current];
+                classie.removeClass(currentQuestion, 'current');
+                classie.addClass(nextQuestion, 'current');
+            }
+
+            // after animation ends, remove class "show-next" from form element and change current question placeholder
+            var self = this,
+                onEndTransitionFn = function (ev) {
+                    if (support.transitions) {
+                        this.removeEventListener(transEndEventName, onEndTransitionFn);
+                    }
+                    if (self.isFilled) {
+                        self._submit();
+                    }
+                    else {
+                        classie.removeClass(self.el, 'show-next');
+                        self.currentNum.innerHTML = self.nextQuestionNum.innerHTML;
+                        self.questionStatus.removeChild(self.nextQuestionNum);
+                        // force the focus on the next input
+                        nextQuestion.querySelector('input, textarea, select').focus();
+                    }
+                };
+
+            if (support.transitions) {
+                this.progress.addEventListener(transEndEventName, onEndTransitionFn);
+            }
+            else {
+                onEndTransitionFn();
+            }
+        }
                                                                                                                         
         // add to global namespace                                                                                      
         scope.minimalForm = minimalForm;
