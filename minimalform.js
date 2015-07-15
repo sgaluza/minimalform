@@ -102,6 +102,7 @@ if (Meteor.isClient) {
     (function (scope) {
 
         'use strict';
+        var self;
         var classie = scope.classie;
 
         var transEndEventNames = {
@@ -124,10 +125,11 @@ if (Meteor.isClient) {
         }
 
         function minimalForm(el, options) {
-            this.el = el;
-            this.options = extend({}, this.options);
-            extend(this.options, options);
-            this._init();
+            self = this;
+            self.el = el;
+            self.options = extend({}, self.options);
+            extend(self.options, options);
+            self._init();
         }                                                                                                               
                                                                                                                         
         // generates a unique id                                                                                        
@@ -148,62 +150,60 @@ if (Meteor.isClient) {
             }
         };
 
-        minimalForm.prototype._init = function () {                                                                     
+        minimalForm.prototype._init = function () {
             // current question                                                                                         
-            this.current = 0;                                                                                           
-                                                                                                                        
+            self.current = 0;
+
             // questions                                                                                                
-            this.questions = [].slice.call(this.el.querySelectorAll('ol.questions > li'));                              
+            self.questions = [].slice.call(self.el.querySelectorAll('ol.questions > li'));
             // total questions                                                                                          
-            this.questionsCount = this.questions.length;                                                                
+            self.questionsCount = self.questions.length;
             // show first question                                                                                      
-            classie.addClass(this.questions[0], 'current');                                                             
+            classie.addClass(self.questions[0], 'current');
                                                                                                                         
             // next question control                                                                                    
-            this.ctrlNext = this.el.querySelector('button.next');
-            this.ctrlNext.setAttribute('aria-label', 'Next');                                                           
+            self.ctrlNext = self.el.querySelector('button.next');
+            self.ctrlNext.setAttribute('aria-label', 'Next');
                                                                                                                         
             // progress bar                                                                                             
-            this.progress = this.el.querySelector('div.progress');                                                      
+            self.progress = self.el.querySelector('div.progress');
             // set progressbar attributes                                                                               
-            this.progress.setAttribute('role', 'progressbar');
-            this.progress.setAttribute('aria-readonly', 'true');
-            this.progress.setAttribute('aria-valuemin', '0');
-            this.progress.setAttribute('aria-valuemax', '100');
-            this.progress.setAttribute('aria-valuenow', '0');                                                           
+            self.progress.setAttribute('role', 'progressbar');
+            self.progress.setAttribute('aria-readonly', 'true');
+            self.progress.setAttribute('aria-valuemin', '0');
+            self.progress.setAttribute('aria-valuemax', '100');
+            self.progress.setAttribute('aria-valuenow', '0');
                                                                                                                         
             // question number status                                                                                   
-            this.questionStatus = this.el.querySelector('span.number');                                                 
+            self.questionStatus = self.el.querySelector('span.number');
             // give the questions status an id                                                                          
-            this.questionStatus.id = this.questionStatus.id || randomID();                                              
+            self.questionStatus.id = self.questionStatus.id || randomID();
             // associate "x / y" with the input via aria-describedby                                                    
-            for (var i = this.questions.length - 1; i >= 0; i--) {
-                var formElement = this.questions[i].querySelector('input, textarea, select');
-                formElement.setAttribute('aria-describedby', this.questionStatus.id);
+            for (var i = self.questions.length - 1; i >= 0; i--) {
+                var formElement = self.questions[i].querySelector('input, textarea, select');
+                formElement.setAttribute('aria-describedby', self.questionStatus.id);
             }
             ;                                                                                                           
             // current question placeholder                                                                             
-            this.currentNum = this.questionStatus.querySelector('span.number-current');
-            this.currentNum.innerHTML = Number(this.current + 1);                                                       
+            self.currentNum = self.questionStatus.querySelector('span.number-current');
+            self.currentNum.innerHTML = Number(self.current + 1);
             // total questions placeholder                                                                              
-            this.totalQuestionNum = this.questionStatus.querySelector('span.number-total');
-            this.totalQuestionNum.innerHTML = this.questionsCount;                                                      
+            self.totalQuestionNum = self.questionStatus.querySelector('span.number-total');
+            self.totalQuestionNum.innerHTML = self.questionsCount;
                                                                                                                         
             // error message                                                                                            
-            this.error = this.el.querySelector('span.error-message');                                                   
+            self.error = self.el.querySelector('span.error-message');
                                                                                                                         
             // checks for HTML5 Form Validation support                                                                 
             // a cleaner solution might be to add form validation to the custom Modernizr script                        
-            this.supportsHTML5Forms = typeof window.document.createElement("input").checkValidity === 'function';       
+            self.supportsHTML5Forms = typeof window.document.createElement("input").checkValidity === 'function';
                                                                                                                         
             // init events                                                                                              
-            this._initEvents();
+            self._initEvents();
         };
 
         minimalForm.prototype._initEvents = function () {
-            var self = this,                                                                                            
-                // first input                                                                                              
-                firstElInput = this.questions[this.current].querySelector('input, textarea, select'),                   
+            var firstElInput = self.questions[self.current].querySelector('input, textarea, select'),
                 // focus                                                                                                    
                 onFocusStartFn = function () {
                     firstElInput.removeEventListener('focus', onFocusStartFn);
@@ -214,7 +214,7 @@ if (Meteor.isClient) {
             firstElInput.addEventListener('focus', onFocusStartFn);                                                     
                                                                                                                         
             // show next question                                                                                       
-            this.ctrlNext.addEventListener('click', function (ev) {
+            self.ctrlNext.addEventListener('click', function (ev) {
                 ev.preventDefault();
                 self._nextQuestion();
             });                                                                                                         
@@ -231,13 +231,13 @@ if (Meteor.isClient) {
         };
 
         minimalForm.prototype._nextQuestion = function () {
-            if (!this._validate()) {
+            if (!self._validate()) {
                 return false;
             }                                                                                                           
                 
-            var input = this.questions[this.current].querySelector('input, textarea, select');                                                                                                        
+            var input = self.questions[self.current].querySelector('input, textarea, select');
             // checks HTML5 validation                                                                                  
-            if (this.supportsHTML5Forms) {
+            if (self.supportsHTML5Forms) {
                 // clear any previous error messages                                                                    
                 input.setCustomValidity('');                                                                            
                                                                                                                         
@@ -247,98 +247,93 @@ if (Meteor.isClient) {
                     // comment or remove this line to use the browser default message                                   
                     input.setCustomValidity('Whoops, that\'s not an email address!');                                   
                     // display the HTML5 error message                                                                  
-                    this._showError(input.validationMessage);                                                           
+                    self._showError(input.validationMessage);
                     // prevent the question from changing                                                               
                     return false;
                 }
-            }     
-            
-            this.options.onAdded(this.current, input.value);                                                                                                      
+            }
+
+            self.options.onAdded(self.current, input.value);
                                                                                                                         
             // check if form is filled                                                                                  
-            if (this.current === this.questionsCount - 1) {
-                this.isFilled = true;
+            if (self.current === self.questionsCount - 1) {
+                self.isFilled = true;
             }                                                                                                           
                                                                                                                         
             // clear any previous error messages                                                                        
-            this._clearError();                                                                                         
+            self._clearError();
                                                                                                                         
             // current question                                                                                         
-            var currentQuestion = this.questions[this.current++];
+            var currentQuestion = self.questions[self.current++];
                                                                      
             // update progress bar                                                                                      
-            this._progress();
+            self._progress();
 
-            if (!this.isFilled) {                                                                                       
+            if (!self.isFilled) {
                 // change the current question number/status                                                            
-                this._updateQuestionNumber();                                                                           
+                self._updateQuestionNumber();
                                                                                                                         
                 // add class "show-next" to form element (start animations)                                             
-                classie.addClass(this.el, 'show-next');                                                                 
+                classie.addClass(self.el, 'show-next');
                                                                                                                         
                 // remove class "current" from current question and add it to the next one                              
                 // current question                                                                                     
-                var nextQuestion = this.questions[this.current];
+                var nextQuestion = self.questions[self.current];
                 classie.removeClass(currentQuestion, 'current');
                 classie.addClass(nextQuestion, 'current');
-            }                                                                                                           
+            }
                                                                                                                         
             // after animation ends, remove class "show-next" from form element and change current question placeholder 
-            var self = this,
-                onEndTransitionFn = function (ev) {
+            var onEndTransitionFn = function (ev) {
                     if (support.transitions) {
-                        this.removeEventListener(transEndEventName, onEndTransitionFn);
+                        self.progress.removeEventListener(transEndEventName, onEndTransitionFn);
                     }
                     if (self.isFilled) {
                         self._submit();
                     }
                     else {
+                        console.log('remove: ' + self.nextQuestionNum.innerHTML);
                         classie.removeClass(self.el, 'show-next');
                         self.currentNum.innerHTML = self.nextQuestionNum.innerHTML;
-                        self.questionStatus.removeChild(self.nextQuestionNum);                                          
-                        // force the focus on the next input                                                            
+                        self.questionStatus.removeChild(self.nextQuestionNum);
+                        // force the focus on the next input
                         nextQuestion.querySelector('input, textarea, select').focus();
                     }
                 };
-
-            if (support.transitions) {
-                this.progress.addEventListener(transEndEventName, onEndTransitionFn);
-            }
-            else {
-                onEndTransitionFn();
-            }
-        }                                                                                                               
+            onEndTransitionFn();
+        }
                                                                                                                         
         // updates the progress bar by setting its width                                                                
         minimalForm.prototype._progress = function () {
-            var currentProgress = this.current * (100 / this.questionsCount);
-            this.progress.style.width = currentProgress + '%';                                                          
+            var currentProgress = self.current * (100 / self.questionsCount);
+            self.progress.style.width = currentProgress + '%';
             // update the progressbar's aria-valuenow attribute                                                         
-            this.progress.setAttribute('aria-valuenow', currentProgress);
+            self.progress.setAttribute('aria-valuenow', currentProgress);
         }                                                                                                               
                                                                                                                         
         // changes the current question number                                                                          
-        minimalForm.prototype._updateQuestionNumber = function () {                                                     
+        minimalForm.prototype._updateQuestionNumber = function () {
             // first, create next question number placeholder                                                           
-            this.nextQuestionNum = window.document.createElement('span');
-            this.nextQuestionNum.className = 'number-next';
-            this.nextQuestionNum.innerHTML = Number(this.current + 1);                                                  
+            self.nextQuestionNum = window.document.createElement('span');
+            self.nextQuestionNum.className = 'number-next';
+            self.nextQuestionNum.innerHTML = Number(self.current + 1);
             // insert it in the DOM                                                                                     
-            this.questionStatus.appendChild(this.nextQuestionNum);
+            self.questionStatus.appendChild(self.nextQuestionNum);
+            console.log('add: ' + self.nextQuestionNum.innerHTML);
         }                                                                                                               
                                                                                                                         
         // submits the form                                                                                             
         minimalForm.prototype._submit = function () {
-            this.options.onSubmit(this.el);
+            self.options.onSubmit(self.el);
         }                                                                                                               
                                                                                                                         
         // TODO (next version..)                                                                                        
         // the validation function                                                                                      
         minimalForm.prototype._validate = function () {                                                                 
             // current question´s input                                                                                 
-            var input = this.questions[this.current].querySelector('input, textarea, select').value;
+            var input = self.questions[self.current].querySelector('input, textarea, select').value;
             if (input === '') {
-                this._showError('EMPTYSTR');
+                self._showError('EMPTYSTR');
                 return false;
             }
 
@@ -360,63 +355,53 @@ if (Meteor.isClient) {
                     message = err;
             }
             ;
-            this.error.innerHTML = message;
-            classie.addClass(this.error, 'show');
+            self.error.innerHTML = message;
+            classie.addClass(self.error, 'show');
         }                                                                                                               
                                                                                                                         
         // clears/hides the current error message                                                                       
         minimalForm.prototype._clearError = function () {
-            classie.removeClass(this.error, 'show');
+            classie.removeClass(self.error, 'show');
         }
 
         minimalForm.prototype.setActiveQuestion = function(index){
             // clear any previous error messages
-            this._clearError();
+            self._clearError();
 
             // current question
-            var currentQuestion = this.questions[this.current];
-            this.current = index;
+            var currentQuestion = self.questions[self.current];
+            self.current = index;
+
             // update progress bar
-            this._progress();
+            self._progress();
 
-            if (!this.isFilled) {
-                // change the current question number/status
-                this._updateQuestionNumber();
+            // change the current question number/status
+            self._updateQuestionNumber();
+            // remove class "current" from current question and add it to the next one
+            classie.addClass(self.el, 'show-next');
+            // current question
+            var nextQuestion = self.questions[self.current];
+            classie.addClass(nextQuestion, 'current');
+            classie.removeClass(currentQuestion, 'current');
 
-                // add class "show-next" to form element (start animations)
-                classie.addClass(this.el, 'show-next');
+            classie.addClass(currentQuestion, 'hidden');
 
-                // remove class "current" from current question and add it to the next one
-                // current question
-                var nextQuestion = this.questions[this.current];
-                classie.removeClass(currentQuestion, 'current');
-                classie.addClass(nextQuestion, 'current');
-            }
 
-            // after animation ends, remove class "show-next" from form element and change current question placeholder
-            var self = this,
-                onEndTransitionFn = function (ev) {
+            var onEndTransitionFn = function (ev) {
                     if (support.transitions) {
-                        this.removeEventListener(transEndEventName, onEndTransitionFn);
+                        self.progress.removeEventListener(transEndEventName, onEndTransitionFn);
                     }
-                    if (self.isFilled) {
-                        self._submit();
-                    }
-                    else {
-                        classie.removeClass(self.el, 'show-next');
-                        self.currentNum.innerHTML = self.nextQuestionNum.innerHTML;
-                        self.questionStatus.removeChild(self.nextQuestionNum);
-                        // force the focus on the next input
-                        nextQuestion.querySelector('input, textarea, select').focus();
-                    }
-                };
+                    classie.removeClass(self.el, 'show-next');
+                    self.currentNum.innerHTML = self.nextQuestionNum.innerHTML;
+                    console.log('remove: ' + self.nextQuestionNum.innerHTML);
+                    self.questionStatus.removeChild(self.nextQuestionNum);
 
-            if (support.transitions) {
-                this.progress.addEventListener(transEndEventName, onEndTransitionFn);
-            }
-            else {
-                onEndTransitionFn();
-            }
+                    // force the focus on the next input
+                    nextQuestion.querySelector('input, textarea, select').focus();
+                    classie.removeClass(currentQuestion, 'hidden');
+                };
+            onEndTransitionFn();
+
         }
                                                                                                                         
         // add to global namespace                                                                                      
