@@ -330,8 +330,7 @@ if (Meteor.isClient) {
             self.nextQuestionNum.innerHTML = Number(self.current + 1);
             // insert it in the DOM                                                                                     
             self.questionStatus.appendChild(self.nextQuestionNum);
-            console.log('add: ' + self.nextQuestionNum.innerHTML);
-        }                                                                                                               
+        }
                                                                                                                         
         // submits the form                                                                                             
         minimalForm.prototype._submit = function () {
@@ -404,7 +403,6 @@ if (Meteor.isClient) {
                     }
                     classie.removeClass(self.el, 'show-next');
                     self.currentNum.innerHTML = self.nextQuestionNum.innerHTML;
-                    console.log('remove: ' + self.nextQuestionNum.innerHTML);
                     self.questionStatus.removeChild(self.nextQuestionNum);
 
                     // force the focus on the next input
