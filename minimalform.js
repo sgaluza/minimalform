@@ -221,21 +221,32 @@ if (Meteor.isClient) {
                                                                                                                         
             // pressing enter will jump to next question                                                                
             window.document.addEventListener('keydown', function (ev) {
-                var keyCode = ev.keyCode || ev.which;                                                                   
-                // enter                                                                                                
+                var keyCode = ev.keyCode || ev.which;
+                // enter
                 if (keyCode === 13) {
                     ev.preventDefault();
-                    self._nextQuestion();
+                    if(!self.options.manualAnswers) {
+                        self._nextQuestion();
+                    }
                 }
             });
         };
 
-        minimalForm.prototype._nextQuestion = function () {
+        minimalForm.prototype.answer = function(ev, value){
+            ev.preventDefault();
+            self._nextQuestion(ev.target, value);
+        };
+
+        minimalForm.prototype.getCurrentIndex = function(){
+            return self.current;
+        }
+
+        minimalForm.prototype._nextQuestion = function (input, value) {
             if (!self._validate()) {
                 return false;
             }                                                                                                           
                 
-            var input = self.questions[self.current].querySelector('input, textarea, select');
+            var input = input || self.questions[self.current].querySelector('input, textarea, select');
             // checks HTML5 validation                                                                                  
             if (self.supportsHTML5Forms) {
                 // clear any previous error messages                                                                    
@@ -253,7 +264,7 @@ if (Meteor.isClient) {
                 }
             }
 
-            self.options.onAdded(self.current, input.value);
+            self.options.onAdded(self.current, value || input.value);
                                                                                                                         
             // check if form is filled                                                                                  
             if (self.current === self.questionsCount - 1) {
