@@ -202,6 +202,20 @@ if (Meteor.isClient) {
             self._initEvents();
         };
 
+        minimalForm.prototype.reinit = function(current){
+            self.questions = [].slice.call(self.el.querySelectorAll('ol.questions > li'));
+            self.questionsCount = self.questions.length;
+            for (var i = self.questions.length - 1; i >= 0; i--) {
+                var formElement = self.questions[i].querySelector('input, textarea, select');
+                formElement.setAttribute('aria-describedby', self.questionStatus.id);
+            }
+            ;
+            self.currentNum = current || self.questionStatus.querySelector('span.number-current');
+            self.currentNum.innerHTML = Number(self.current + 1);
+            self.totalQuestionNum = self.questionStatus.querySelector('span.number-total');
+            self.totalQuestionNum.innerHTML = self.questionsCount;
+        }
+
         minimalForm.prototype._initEvents = function () {
             var firstElInput = self.questions[self.current].querySelector('input, textarea, select'),
                 // focus                                                                                                    
@@ -265,7 +279,7 @@ if (Meteor.isClient) {
             }
 
             self.options.onAdded(self.current, value || input.value);
-                                                                                                                        
+
             // check if form is filled                                                                                  
             if (self.current === self.questionsCount - 1) {
                 self.isFilled = true;
@@ -300,7 +314,7 @@ if (Meteor.isClient) {
                         self.progress.removeEventListener(transEndEventName, onEndTransitionFn);
                     }
                     if (self.isFilled) {
-                        self._submit();
+                        //self._submit();
                     }
                     else {
                         console.log('remove: ' + self.nextQuestionNum.innerHTML);
