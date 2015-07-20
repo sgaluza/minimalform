@@ -280,50 +280,42 @@ if (Meteor.isClient) {
 
             self.options.onAdded(self.current, value || input.value);
 
-            // check if form is filled                                                                                  
+            // check if form is filled
             if (self.current === self.questionsCount - 1) {
-                self.isFilled = true;
-            }                                                                                                           
-                                                                                                                        
-            // clear any previous error messages                                                                        
+                return;
+            }
+
+            // clear any previous error messages
             self._clearError();
-                                                                                                                        
-            // current question                                                                                         
+
+            // current question
             var currentQuestion = self.questions[self.current++];
-                                                                     
-            // update progress bar                                                                                      
+
+            // update progress bar
             self._progress();
 
-            if (!self.isFilled) {
-                // change the current question number/status                                                            
-                self._updateQuestionNumber();
-                                                                                                                        
-                // add class "show-next" to form element (start animations)                                             
-                classie.addClass(self.el, 'show-next');
-                                                                                                                        
-                // remove class "current" from current question and add it to the next one                              
-                // current question                                                                                     
-                var nextQuestion = self.questions[self.current];
-                classie.removeClass(currentQuestion, 'current');
-                classie.addClass(nextQuestion, 'current');
-            }
-                                                                                                                        
-            // after animation ends, remove class "show-next" from form element and change current question placeholder 
+            // change the current question number/status
+            self._updateQuestionNumber();
+
+            // add class "show-next" to form element (start animations)
+            classie.addClass(self.el, 'show-next');
+
+            // remove class "current" from current question and add it to the next one
+            // current question
+            var nextQuestion = self.questions[self.current];
+            classie.removeClass(currentQuestion, 'current');
+            classie.addClass(nextQuestion, 'current');
+
+            // after animation ends, remove class "show-next" from form element and change current question placeholder
             var onEndTransitionFn = function (ev) {
                     if (support.transitions) {
                         self.progress.removeEventListener(transEndEventName, onEndTransitionFn);
                     }
-                    if (self.isFilled) {
-                        //self._submit();
-                    }
-                    else {
-                        console.log('remove: ' + self.nextQuestionNum.innerHTML);
-                        classie.removeClass(self.el, 'show-next');
-                        self.currentNum.innerHTML = self.nextQuestionNum.innerHTML;
-                        self.questionStatus.removeChild(self.nextQuestionNum);
-                        // force the focus on the next input
-                        nextQuestion.querySelector('input, textarea, select').focus();
-                    }
+                    classie.removeClass(self.el, 'show-next');
+                    self.currentNum.innerHTML = self.nextQuestionNum.innerHTML;
+                    self.questionStatus.removeChild(self.nextQuestionNum);
+                    // force the focus on the next input
+                    nextQuestion.querySelector('input, textarea, select').focus();
                 };
             onEndTransitionFn();
         }
