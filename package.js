@@ -2,9 +2,9 @@ Package.describe({
   name: 'sgaluza:minimalform',
   version: '0.0.4_5',
   // Brief, one-line summary of the package.
-  summary: 'Based on coderops article: http://tympanus.net/codrops/2014/04/01/minimal-form-interface/ written by Mary Lou.',
+  summary: 'Based on coderops article: http://tympanus.net/codrops/2014/04/01/minimal-form-interface/',
   git: '',
-  documentation: 'README.md'
+  documentation: null
 });
 
 Package.onUse(function(api) {
