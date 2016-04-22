@@ -315,7 +315,7 @@ if (Meteor.isClient) {
                     self.currentNum.innerHTML = self.nextQuestionNum.innerHTML;
                     self.questionStatus.removeChild(self.nextQuestionNum);
                     // force the focus on the next input
-                    nextQuestion.querySelector('input, textarea, select').focus();
+                    if (nextQuestion.querySelector('input:not([type="button"]), textarea, select')) nextQuestion.querySelector('input:not([type="button"]), textarea, select').focus();
                 };
             onEndTransitionFn();
         }
@@ -427,7 +427,7 @@ if (Meteor.isClient) {
                     self.questionStatus.removeChild(self.nextQuestionNum);
 
                     // force the focus on the next input
-                    nextQuestion.querySelector('input, textarea, select').focus();
+                    if (nextQuestion.querySelector('input:not([type="button"]), textarea, select')) nextQuestion.querySelector('input:not([type="button"]), textarea, select').focus();
                     classie.removeClass(currentQuestion, 'hidden');
                 };
             onEndTransitionFn();
