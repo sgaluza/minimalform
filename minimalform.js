@@ -315,7 +315,7 @@ if (Meteor.isClient) {
                     self.currentNum.innerHTML = self.nextQuestionNum.innerHTML;
                     self.questionStatus.removeChild(self.nextQuestionNum);
                     // force the focus on the next input
-                    nextQuestion.querySelector('input, textarea, select').focus();
+                    if (nextQuestion.querySelector('input:not([type="button"]), textarea, select')) nextQuestion.querySelector('input:not([type="button"]), textarea, select').focus();
                 };
             onEndTransitionFn();
         }
@@ -347,14 +347,29 @@ if (Meteor.isClient) {
         // the validation function                                                                                      
         minimalForm.prototype._validate = function () {                                                                 
             // current question´s input                                                                                 
-            var input = self.questions[self.current].querySelector('input, textarea, select').value;
-            if (input === '') {
+            var input = self.questions[self.current].querySelector('input, textarea, select');
+            if (input.value.replace(/\s/g, '') === '') {
                 self._showError('EMPTYSTR');
                 return false;
             }
-
+            var attr = input.attributes['data-type'] ? input.attributes['data-type'].value : "";
+            switch(attr){
+                case "SSN":
+                    if (input.value.length < 11) {
+                        self._showError("Social security number must contain 9 digits");
+                        return false;
+                    }
+                    break;
+                case "DOB":
+                    var date = input.value.split('/');
+                    if (input.value.length < 10 || date.length != 3 || date[0] > 12 || date[1] > 31 || date[2] > new Date().getFullYear()) {
+                        self._showError("Wrong date or date format");
+                        return false;
+                    }
+                    break;
+            }
             return true;
-        }                                                                                                               
+        }
                                                                                                                         
         // TODO (next version..)                                                                                        
         minimalForm.prototype._showError = function (err) {
@@ -412,7 +427,7 @@ if (Meteor.isClient) {
                     self.questionStatus.removeChild(self.nextQuestionNum);
 
                     // force the focus on the next input
-                    nextQuestion.querySelector('input, textarea, select').focus();
+                    if (nextQuestion.querySelector('input:not([type="button"]), textarea, select')) nextQuestion.querySelector('input:not([type="button"]), textarea, select').focus();
                     classie.removeClass(currentQuestion, 'hidden');
                 };
             onEndTransitionFn();

@@ -9,15 +9,15 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.1.0.2');
-  api.addFiles(['minimalform.js'
-    , 'fonts/codropsicons/codropsicons.eot'
+  api.addAssets(['fonts/codropsicons/codropsicons.eot'
     , 'fonts/codropsicons/codropsicons.svg'
     , 'fonts/codropsicons/codropsicons.ttf'
     , 'fonts/codropsicons/codropsicons.woff'
     , 'fonts/icomoon/icomoon.eot'
     , 'fonts/icomoon/icomoon.svg'
     , 'fonts/icomoon/icomoon.ttf'
-    , 'fonts/icomoon/icomoon.woff'
+    , 'fonts/icomoon/icomoon.woff'], 'client')
+  api.addFiles(['minimalform.js'
     , 'css/component.css'
     ], 'client');
   api.export('minimalForm', 'client')
